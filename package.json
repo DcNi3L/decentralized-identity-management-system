@@ -7,8 +7,10 @@
   "dependencies": {
     "assert": "^2.1.0",
     "axios": "^1.7.9",
+    "browser-image-compression": "^2.0.2",
     "chai": "^5.1.2",
     "chai-as-promised": "^8.0.1",
-    "dotenv": "^16.4.6"
+    "dotenv": "^16.4.6",
+    "react-icons": "^5.4.0"
   }
 }

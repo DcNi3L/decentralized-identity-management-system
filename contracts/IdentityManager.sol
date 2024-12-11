@@ -5,6 +5,7 @@ contract IdentityManager {
     struct Identity {
         string name;
         string email;
+        string profileImage;
         address owner;
     }
 
@@ -16,7 +17,9 @@ contract IdentityManager {
 
     // Events
     event IdentityRegistered(address indexed user, string name, string email);
-    event IdentityUpdated(address indexed user, string name, string email);
+    event IdentityUpdated(address indexed user, string name, string email, string profileImage);
+    event IdentityDeleted(address indexed user);
+    event ProfileImageUpdated(address indexed user, string profileImage);
 
     // Modifier to check if the user is registered
     modifier onlyRegistered() {
@@ -37,7 +40,7 @@ contract IdentityManager {
         );
 
         // Store identity
-        identities[msg.sender] = Identity(_name, _email, msg.sender);
+        identities[msg.sender] = Identity(_name, _email, "", msg.sender);
 
         // Add to registered users
         registeredUsers.push(msg.sender);
@@ -46,30 +49,59 @@ contract IdentityManager {
     }
 
     // Function to update an existing identity
-    function updateIdentity(string memory _name, string memory _email)
-    public
-    onlyRegistered
-    {
+    function updateIdentity(
+        string memory _name,
+        string memory _email,
+        string memory _profileImage
+    ) public onlyRegistered {
         require(bytes(_name).length > 0, "Name is required");
         require(bytes(_email).length > 0, "Email is required");
 
         // Update the identity
         identities[msg.sender].name = _name;
         identities[msg.sender].email = _email;
+        identities[msg.sender].profileImage = _profileImage;
 
         // Emit event
-        emit IdentityUpdated(msg.sender, _name, _email);
+        emit IdentityUpdated(msg.sender, _name, _email, _profileImage);
+    }
+
+    // Function to update profile image
+    function updateProfileImage(string memory _profileImage) public onlyRegistered {
+        require(bytes(_profileImage).length > 0, "Profile image is required");
+
+        // Update the profile image
+        identities[msg.sender].profileImage = _profileImage;
+
+        // Emit event
+        emit ProfileImageUpdated(msg.sender, _profileImage);
+    }
+
+    // Function to delete an identity
+    function deleteIdentity() public onlyRegistered {
+        delete identities[msg.sender];
+
+        // Remove user from the registeredUsers array
+        for (uint256 i = 0; i < registeredUsers.length; i++) {
+            if (registeredUsers[i] == msg.sender) {
+                registeredUsers[i] = registeredUsers[registeredUsers.length - 1];
+                registeredUsers.pop();
+                break;
+            }
+        }
+
+        emit IdentityDeleted(msg.sender);
     }
 
     // Function to get identity details for a specific user
     function getIdentity(address _user)
-    public
-    view
-    returns (string memory, string memory)
+        public
+        view
+        returns (string memory, string memory, string memory)
     {
         Identity memory id = identities[_user];
         require(bytes(id.name).length > 0, "User not registered");
-        return (id.name, id.email);
+        return (id.name, id.email, id.profileImage);
     }
 
     // Function to get the list of all registered users

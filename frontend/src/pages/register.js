@@ -12,15 +12,14 @@ const Register = () => {
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
+  let registered = false;
 
-  // Connect wallet
   const connectWallet = async () => {
     try {
       const accounts = await window.ethereum.request({
         method: 'eth_requestAccounts',
       });
-      setAccount(accounts[0]); // Set the first account from MetaMask
-      console.log('Wallet connected:', accounts[0]);
+      setAccount(accounts[0]);
       setErrorMessage('');
     } catch (err) {
       console.error('Error connecting wallet:', err);
@@ -28,7 +27,6 @@ const Register = () => {
     }
   };
 
-  // Register identity
   const registerIdentity = async () => {
     if (!account) {
       setErrorMessage('Wallet not connected. Please connect your wallet.');
@@ -46,84 +44,80 @@ const Register = () => {
 
     try {
       await contract.methods
-          .registerIdentity(name, email)
-          .send({ from: account });
+        .registerIdentity(name, email)
+        .send({ from: account });
       setSuccessMessage('Registration successful! Redirecting to your profile...');
       setTimeout(() => {
+        registered = true;
         router.push('/profile');
-      }, 2000); // Redirect after a short delay
+      }, 2000);
     } catch (err) {
       console.error('Error while registering user:', err);
-      setErrorMessage(
-          'Registration failed. Ensure your wallet is funded and try again.'
-      );
+      setErrorMessage('Registration failed. Ensure your wallet is funded and try again.');
     } finally {
       setLoading(false);
     }
   };
 
+
   return (
-      <div className="bg-white w-screen box-border text-black">
-        <title>Register</title>
-        <Header />
-        <main className="px-20 py-8 min-h-screen flex justify-center items-center">
-          <div className="flex flex-col justify-between rounded-xl shadow-2xl w-max h-max p-6 bg-[#f7fafc]">
-            <h1 className="text-center font-bold text-2xl">Register</h1>
+    <div className="bg-gray-50 min-h-screen flex flex-col">
+      <title>Register</title>
+      <Header />
+      <main className="flex-grow flex items-center justify-center py-12 px-6">
+        <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full">
+          <h1 className="text-2xl translate-y-4 font-semibold text-center text-gray-800 mb-6">Register</h1>
+          <button
+            className={`w-full font-semibold translate-y-3 px-4 py-2 mb-4 rounded ${
+              account ? 'text-green-500' : 'text-blue-500 hover:text-blue-600 underline'
+            }`}
+            onClick={connectWallet}
+            disabled={loading}
+          >
+            {account ? 'Wallet Connected' : 'Connect Wallet'}
+          </button>
+          {account && <p className="text-center text-sm text-gray-500 mb-6">{account}</p>}
+
+          <div className="space-y-4">
+            <input
+              type="text"
+              placeholder="Name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-3 py-2 border rounded-lg text-gray-800 focus:ring focus:ring-blue-300 focus:outline-none"
+              disabled={loading}
+            />
+            <input
+              type="email"
+              placeholder="Email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-3 py-2 border rounded-lg text-gray-800 focus:ring focus:ring-blue-300 focus:outline-none"
+              disabled={loading}
+            />
             <button
-                className="m-[-2] underline text-blue-500"
-                onClick={connectWallet}
-                disabled={loading}
+              className={`w-full px-4 py-2 text-white font-semibold rounded-lg ${
+                loading ? 'bg-blue-300 cursor-not-allowed' : 'bg-blue-500 hover:bg-blue-600'
+              }`}
+              onClick={registerIdentity}
+              disabled={loading}
             >
-              {account ? 'Wallet Connected' : 'Connect Wallet'}
+              {loading ? 'Registering...' : 'Register'}
             </button>
-            {account ? (
-                <p>
-                  <b>Your wallet: </b>
-                  {account}
-                </p>
-            ) : (
-                <p className="text-center">First connect your wallet!</p>
-            )}
-            <div className="flex flex-col justify-around h-52">
-              <input
-                  className="border border-gray-400 rounded p-2"
-                  placeholder="Name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  disabled={loading}
-              />
-              <input
-                  className="border -translate-y-1 border-gray-400 rounded p-2"
-                  placeholder="Email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={loading}
-              />
-              <button
-                  className={`bg-blue-500 rounded p-2 text-white font-bold tracking-wider delay-125 linear ${
-                      loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-blue-600'
-                  }`}
-                  onClick={registerIdentity}
-                  disabled={loading}
-              >
-                {loading ? 'Registering...' : 'Register'}
-              </button>
-            </div>
-            {successMessage && (
-                <p className="text-green-500 text-center mt-4">{successMessage}</p>
-            )}
-            {errorMessage && (
-                <p className="text-red-500 text-center mt-4">{errorMessage}</p>
-            )}
-            <p className="p-1 -m-2 text-center">
-              Already have an account?{' '}
-              <Link className="text-blue-500 font-bold underline" href="/login">
-                Login
-              </Link>
-            </p>
           </div>
-        </main>
-      </div>
+
+          {successMessage && <p className="text-green-600 text-center mt-4">{successMessage}</p>}
+          {errorMessage && <p className="text-red-600 text-center mt-4">{errorMessage}</p>}
+
+          <p className="text-center text-sm text-gray-600 mt-6">
+            Already have an account?{' '}
+            <Link href="/login" className="text-blue-500 font-semibold hover:underline">
+              Login
+            </Link>
+          </p>
+        </div>
+      </main>
+    </div>
   );
 };
 

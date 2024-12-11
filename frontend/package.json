@@ -15,6 +15,9 @@
     "next": "15.0.3",
     "react": "19.0.0-rc-66855b96-20241106",
     "react-dom": "19.0.0-rc-66855b96-20241106",
+    "react-easy-crop": "^5.2.0",
+    "react-image-crop": "^11.0.7",
+    "react-modal": "^3.16.1",
     "web3": "^4.15.0"
   },
   "devDependencies": {

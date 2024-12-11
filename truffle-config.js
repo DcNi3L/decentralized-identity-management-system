@@ -17,7 +17,7 @@ module.exports = {
           process.env.SEPOLIA_URL // Infura Sepolia endpoint
         ),
       network_id: 11155111, // Sepolia network ID
-      gas: 5500000, // Gas limit
+      gas: 55000000, // Gas limit
       gasPrice: 10000000000, // 10 Gwei
       networkCheckTimeout: 100000,
       timeoutBlocks: 200,
