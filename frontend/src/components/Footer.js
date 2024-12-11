@@ -1,12 +1,7 @@
 const Footer = () => {
   return (
-    <footer
-      style={{
-        padding: '10px',
-        borderTop: '1px solid #ccc',
-        marginTop: '20px',
-      }}>
-      <p>&copy; 2024 Decentralized Identity Management System</p>
+    <footer className="flex justify-center bg-gray-300 h-20">
+      <p>&copy; 2024 Decentralized Identity Management System, <b>Daniel Mekenbaev</b></p>
     </footer>
   );
 };

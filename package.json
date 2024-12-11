@@ -6,6 +6,7 @@
   },
   "dependencies": {
     "assert": "^2.1.0",
+    "axios": "^1.7.9",
     "chai": "^5.1.2",
     "chai-as-promised": "^8.0.1",
     "dotenv": "^16.4.6"

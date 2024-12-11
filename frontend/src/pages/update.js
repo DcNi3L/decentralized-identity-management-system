@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { web3, contract } from '../../lib/web3';
 import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 const Update = () => {
   const [name, setName] = useState('');
@@ -46,7 +45,6 @@ const Update = () => {
           <button onClick={updateIdentity}>Update</button>
         </div>
       </main>
-      <Footer />
     </div>
   );
 };

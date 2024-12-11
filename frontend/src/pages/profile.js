@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { web3, contract } from '../../lib/web3';
 import Header from '../components/Header';
-import Footer from '../components/Footer';
 
 const Profile = () => {
   const [account, setAccount] = useState('');
@@ -22,7 +21,7 @@ const Profile = () => {
         email: result[1],
       });
     } catch (err) {
-      console.error('Error fetching profile:', err);
+      console.log('Error fetching profile:', err);
     }
   };
 
@@ -30,12 +29,16 @@ const Profile = () => {
     connectWallet();
   }, []);
 
+  useEffect(() => {
+    fetchProfile();
+  },)
+
   return (
     <div>
+      <title>Profile</title>
       <Header />
       <main style={{ padding: '20px' }}>
         <h1>Your Profile</h1>
-        <button onClick={fetchProfile}>Fetch Profile</button>
         {identity.name && (
           <div>
             <p>Name: {identity.name}</p>
@@ -43,7 +46,6 @@ const Profile = () => {
           </div>
         )}
       </main>
-      <Footer />
     </div>
   );
 };

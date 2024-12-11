@@ -36,22 +36,20 @@ contract IdentityManager {
             "User already registered"
         );
 
-        // Create a new identity
-        identities[msg.sender] = Identity({
-            name: _name,
-            email: _email,
-            owner: msg.sender
-        });
+        // Store identity
+        identities[msg.sender] = Identity(_name, _email, msg.sender);
 
-        // Add user to registeredUsers list
+        // Add to registered users
         registeredUsers.push(msg.sender);
 
-        // Emit event
         emit IdentityRegistered(msg.sender, _name, _email);
     }
 
     // Function to update an existing identity
-    function updateIdentity(string memory _name, string memory _email) public onlyRegistered {
+    function updateIdentity(string memory _name, string memory _email)
+    public
+    onlyRegistered
+    {
         require(bytes(_name).length > 0, "Name is required");
         require(bytes(_email).length > 0, "Email is required");
 
@@ -64,7 +62,11 @@ contract IdentityManager {
     }
 
     // Function to get identity details for a specific user
-    function getIdentity(address _user) public view returns (string memory, string memory) {
+    function getIdentity(address _user)
+    public
+    view
+    returns (string memory, string memory)
+    {
         Identity memory id = identities[_user];
         require(bytes(id.name).length > 0, "User not registered");
         return (id.name, id.email);
